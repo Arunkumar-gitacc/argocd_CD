@@ -27,13 +27,13 @@ spec:
         ports:
         - containerPort: 80
         readinessProbe:            # Fixed: capital P
-          httpGET:
+          httpGet:
             path: /
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10        # Fixed: lowercase p
         livenessProbe:
-          httpGET:
+          httpGet:
             path: /
             port: 80
           initialDelaySeconds: 15
