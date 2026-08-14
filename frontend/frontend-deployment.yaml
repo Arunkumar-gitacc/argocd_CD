@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: arunkumar885/frontend:test-latest
+        image: arunkumar885/frontend:test-v1.0.13
         imagePullPolicy: Always
         resources:
           requests:
