@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: arunkumar885/frontend:test-latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "30Mi"
+          limits:
+            cpu: "100m"       # Fixed: 100m (0.1 core) instead of 30 physical cores
+            memory: "80Mi"
+        ports:
+        - containerPort: 80
+        readinessprobe:
+          httpGET:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          PeriodSeconds: 10
+        livenessProbe:
+          httpGET:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          PeriodSeconds: 20
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa
+  namespace: project
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
