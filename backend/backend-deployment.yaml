@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: arunkumar885/backend:test-latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "30m"
+              memory: "500Mi"
+            limits:
+              cpu: "60m"
+              memory: "700Mi"
+          ports:
+            - containerPort: 8080
+          env:
+              # From ConfigMap
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_HOST
+
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_PORT
+
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_NAME
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_USER
+
+            # Keep JDBC URL (simple + safe)
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true
+
+            # Secret (already correct)
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
