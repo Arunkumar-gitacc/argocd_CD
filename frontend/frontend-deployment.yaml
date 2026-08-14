@@ -22,23 +22,23 @@ spec:
             cpu: "10m"
             memory: "30Mi"
           limits:
-            cpu: "100m"       # Fixed: 100m (0.1 core) instead of 30 physical cores
+            cpu: "100m"
             memory: "80Mi"
         ports:
         - containerPort: 80
-        readinessprobe:
+        readinessProbe:            # Fixed: capital P
           httpGET:
             path: /
             port: 80
           initialDelaySeconds: 5
-          PeriodSeconds: 10
+          periodSeconds: 10        # Fixed: lowercase p
         livenessProbe:
           httpGET:
             path: /
             port: 80
           initialDelaySeconds: 15
-          PeriodSeconds: 20
-
+          periodSeconds: 20        # Fixed: lowercase p
+---                                # Fixed: Added YAML document separator
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
