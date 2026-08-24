@@ -14,31 +14,32 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: arunkumar885/frontend:test-v1.0.13
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: "10m"
-            memory: "30Mi"
-          limits:
-            cpu: "100m"
-            memory: "80Mi"
-        ports:
-        - containerPort: 80
-        readinessProbe:            # Fixed: capital P
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10        # Fixed: lowercase p
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 20        # Fixed: lowercase p
----                                # Fixed: Added YAML document separator
+        - name: frontend
+          image: arunkumar885/frontend:test-v1.0.20
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "30Mi"
+            limits:
+              cpu: "100m"
+              memory: "80Mi"
+          ports:
+            - containerPort: 80
+          readinessProbe: # Fixed: capital P
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10 # Fixed: lowercase p
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20 # Fixed: lowercase p
+---
+# Fixed: Added YAML document separator
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -52,9 +53,13 @@ spec:
   minReplicas: 1
   maxReplicas: 5
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+  template:
+    spec:
+      containers:
+        - image: arunkumar885/frontend:test-v1.0.20
