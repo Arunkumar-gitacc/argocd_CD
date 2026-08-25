@@ -59,7 +59,7 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
-  template:
-    spec:
-      containers:
-        - image: arunkumar885/frontend:test-v1.0.20
+  # template:
+  #   spec:
+  #     containers:
+  #       - image: arunkumar885/frontend:test-v1.0.20
